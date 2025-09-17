@@ -1,0 +1,180 @@
+What is ABPM?
+ABPM = Ambulatory Blood Pressure Monitoring
+It is a method of measuring blood pressure (BP) continuously over 24 hours while the patient goes about their normal daily activities (work, sleep, exercise, etc.).
+The patient wears a portable BP device strapped to the arm with a cuff, connected to a small monitor (usually on the waist or shoulder).
+The device inflates at regular intervals (every 15–30 min during the day, every 30–60 min at night) to record BP values.
+
+🔹 Why is ABPM used?
+Office (clinic) BP readings can be misleading:
+
+White-coat hypertension (WCH)
+BP looks high in clinic (patient nervous), but normal outside.
+Risk: unnecessary medication.
+
+Masked hypertension
+BP looks normal in clinic, but high outside (stress, work, lifestyle).
+Risk: missed diagnosis → untreated hypertension.
+
+Better risk prediction
+ABPM correlates more strongly with long-term cardiovascular outcomes (heart disease, stroke, kidney damage) compared to single office BP.
+
+🔹 What does ABPM show?
+
+24-hour average BP (daytime vs nighttime).
+BP variability (how much BP fluctuates).
+Nocturnal “dipping” pattern: Normally, BP falls at night.
+Non-dippers (no drop) or reverse dippers (BP rises at night) have higher cardiovascular risk.
+
+Can detect:
+Sustained hypertension (always high).
+White-coat hypertension (high in clinic, normal on ABPM).
+Masked hypertension (normal in clinic, high on ABPM).
+
+🔹 Advantages of ABPM
+
+More accurate than clinic BP.
+Detects white-coat & masked hypertension.
+Provides information on day-night BP patterns.
+Helps evaluate treatment effectiveness.
+Strong predictor of organ damage (heart, kidney, brain).
+
+🔹 Disadvantages of ABPM
+
+Costly (devices are more expensive than normal BP monitors).
+Limited availability (often only in specialist centers).
+Patient discomfort (frequent cuff inflations disturb sleep, cause mild pain/bruising).
+Requires trained staff for setup and interpretation.
+
+
+How does ML help here , what is its role?
+The idea is:
+Use ML when ABPM is unavailable.
+ML could act as a “surrogate” tool to classify patients into:
+Normal/Target
+Hypertension
+White-coat hypertension
+Masked hypertension
+
+ML can be deployed cheaply (just software + existing patient data).
+🔹 Benefits of ML in this context
+Accessibility
+Any clinic with a computer + patient records could apply ML, even if ABPM devices are unavailable.
+Cost reduction
+Instead of buying/maintaining expensive ABPM machines, ML uses existing data.
+Scalability
+Works across thousands of patients in primary care or remote areas.
+
+Risk stratification
+Even if accuracy isn’t perfect, ML-derived groups were still shown to correlate with long-term cardiovascular outcomes.
+Meaning ML can still guide doctors: “This patient looks high risk — follow them up more closely.”
+
+🔹 But (the limitation):
+ML is not yet accurate enough to replace ABPM.
+The study showed AUROC ~0.85–0.88 (good), but accuracy and F1 were lower (0.57–0.72).
+Especially struggled with white-coat and masked hypertension.
+
+So right now:
+ABPM = gold standard.
+ML = backup tool when ABPM isn’t available, or for initial screening/risk stratification.
+
+
+But our plan is to explore ways to leverage the knowldge we have on ML and to mostly use ML instead of ABPM and making ML models are more common so that each and every person can get proper diagnosis
+To do this we plan to do our resarch on collecting abpm data for training a model such that when it is given a normal clinical BP data from the normal BP machines it is able to detect whether it is hypertension or not accuractly without the problem of masked and white-coat hypertension
+
+So this semester we went through the research paper (tell about the paper we used) in which the authors had mentioned and developed a model using 7 different classifiers but we mainly focussed on xgboost and random forest because:
+
+XGBoost-->
+
+    What is XGBoost?
+
+XGBoost = Extreme Gradient Boosting
+It is a machine learning algorithm that builds an ensemble of decision trees.
+Each tree learns to fix the errors of the previous trees.
+Final prediction = combined output of all the trees.
+
+✅ Why is it powerful?
+Gradient Boosting: uses gradient descent to minimize errors step by step.
+Regularization (L1 & L2): prevents overfitting.
+Parallel processing: trains much faster than classic boosting methods.
+Handles missing values automatically.
+Feature importance: tells you which input features matter most.
+
+Where XGBoost helps
+We can train XGBoost on routine clinical data (office BP, age, sex, BMI, labs, medical history).
+Labels (ground truth): ABPM results (e.g., hypertensive vs normal, or white-coat vs masked).
+The model learns the mapping:
+Inputs: cheap, easily available features
+Output: what ABPM would have shown
+
+✅ Benefits
+Cost-effective: ABPM is not needed for every patient.
+Scalable: Any clinic with basic BP & patient data can use ML.
+Risk stratification: Even if not perfect, XGBoost predictions still correlate with cardiovascular outcomes.
+Feature insights: Helps identify which cheap measurements (like office BP + age) act as the best proxies for ABPM.
+
+See a youtube video on xgboost once
+
+
+Random forest:
+
+What is Random Forest?
+Random Forest is an ensemble learning algorithm based on decision trees.
+It builds many independent decision trees and combines their outputs:
+For classification → majority vote of all trees.
+For regression → average of all trees.
+
+✅ How it works
+Bootstrap sampling (bagging):
+Each tree is trained on a random subset of the data (with replacement).
+Random feature selection:
+At each split, only a random subset of features is considered.
+This ensures trees are diverse.
+Aggregation:
+Predictions from all trees are combined (majority vote / averaging).
+
+👉 This randomness makes the model robust and less prone to overfitting compared to a single decision tree.
+
+Strengths
+Handles tabular data well.
+Works with both numerical and categorical features.
+Robust to noise & missing data.
+Easy to interpret feature importance.
+Less overfitting than a single tree.
+
+❌ Weaknesses
+Slower and heavier than simple models if forest is very large.
+Trees are independent → sometimes less accurate than gradient boosting (like XGBoost) on complex datasets.
+Doesn’t model subtle patterns as well as boosting.
+
+Where Random Forest helps
+Like XGBoost, Random Forest can be trained on:
+Inputs (features): Office BP, demographics (age, sex, BMI), clinical history, labs.
+Labels (targets): ABPM classification (normal, sustained hypertension, masked, white-coat).
+The forest of decision trees learns non-linear patterns in patient data that mimic what ABPM would show.
+
+
+
+Then show the model first run xgb and rf codes then run the predict_rf code 
+
+While showing explain about f1 score,precision score,accuracy,recall score and roc and AUROC
+Tell why we used k-fold as the data set was small , elaborate on it
+
+Then show the predictions and conclude xgboost is beet bcz of:
+Complex patterns in BP:
+Hypertension diagnosis isn’t linear → depends on age, night/day BP differences, BP load, etc.
+XGBoost models non-linear interactions better.
+
+Imbalanced data:
+Many ABPM datasets have more hypertensive than normotensive cases.
+XGBoost handles imbalance better with custom loss functions and scale_pos_weight.
+
+Higher AUROC and F1:
+In published ABPM ML studies, XGBoost usually gives better AUROC (~0.85–0.95) than Random Forest.
+This means better discrimination between hypertensive vs non-hypertensive.
+
+In the model itself 
+Random forest gives more weightage on bps-day which is not right while in xgboost it gives more weightage on bp-load
+While predicting also the random forest prediction is not very sure as seen in Class probabilities while xgb is confident in its prediction
+
+
+Hence Proved
