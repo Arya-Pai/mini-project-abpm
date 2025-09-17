@@ -26,7 +26,10 @@ print(df.head())
 
 
 if "Hypertension" not in df.columns:
-    df["Hypertension"] = ((df["BPS-24"] >= 130) | (df["BPD-24"] >= 80)).astype(int)
+    df["Hypertension"] = (
+        ((df["BPS-Day24"] >= 135) | (df["BPD-Day24"] >= 85)) |     # Daytime criteria
+        ((df["BPS-Night24"] >= 120) | (df["BPD-Night24"] >= 70))   # Nighttime criteria
+    ).astype(int)
 
 
 features = ["HRecord", "Perc", "Interrupt", "Age", "Weight", "Height", 

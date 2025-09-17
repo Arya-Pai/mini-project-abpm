@@ -23,9 +23,11 @@ for col in df.select_dtypes([object]):
 print("✅ Data loaded. Shape:", df.shape)
 print(df.head())
 
-
 if "Hypertension" not in df.columns:
-    df["Hypertension"] = ((df["BPS-24"] >= 130) | (df["BPD-24"] >= 80)).astype(int)
+    df["Hypertension"] = (
+        ((df["BPS-Day24"] >= 135) | (df["BPD-Day24"] >= 85)) |     # Daytime criteria
+        ((df["BPS-Night24"] >= 120) | (df["BPD-Night24"] >= 70))   # Nighttime criteria
+    ).astype(int)
 
 
 features =features = ["HRecord", "Perc", "Interrupt", "Age", "Weight", "Height", 
@@ -124,7 +126,7 @@ def add_realistic_noise(X, noise_level=0.05):
     return X_noisy
 
 
-def cross_validate_model(model, X, y, folds=50, noise_level=0.05):
+def cross_validate_model(model, X, y, folds=10, noise_level=0.05):
     
     X_noisy = add_realistic_noise(X, noise_level=noise_level)
 
